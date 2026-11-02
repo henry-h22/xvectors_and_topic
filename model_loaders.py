@@ -32,8 +32,8 @@ def load_file(path: Path):
     return torchaudio.transforms.Resample(sr, 16000)(wav)
 
 
-def ms_to_samples(ms: int, sr: int = 16000):
-    return (ms * sr) / 1000
+def ms_to_samples(ms: int, sr: int = 16000) -> int:
+    return int((ms * sr) / 1000)
 
 
 def grab_snippet(audio: torch.tensor, boundaries_ms: tuple[int, int]) -> tuple[torch.tensor, int]:
