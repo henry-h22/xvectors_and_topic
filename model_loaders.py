@@ -30,3 +30,22 @@ def load_file(path):
     wav, sr = torchaudio.load(path)
     return torchaudio.transforms.Resample(sr, 16000)(wav)
 
+
+def ms_to_samples(ms: int, sr: int = 16000):
+    return (ms * sr) / 1000
+
+
+def grab_snippet(audio: torch.tensor, start_ms: int, end_ms: int) -> torch.tensor:
+    """
+    Given a torchaudio tensor @ sample rate 16,000 Hz, return just the bit between the two bounds
+    """
+
+    start_sample = ms_to_samples(start_ms)
+    if start_sample < 0: start_sample = 0
+
+    end_sample = ms_to_samples(end_ms)
+    max_sample = audio.size()[1] - 1
+    if end_sample > max_sample: end_sample = max_sample
+
+    return audio[ms_to_samples(start_ms):]
+
