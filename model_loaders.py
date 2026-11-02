@@ -26,7 +26,7 @@ def embed_file(classifier, input):
 
 # These are general helpers:
 
-def load_file(path):
+def load_file(path: Path):
     wav, sr = torchaudio.load(path)
     return torchaudio.transforms.Resample(sr, 16000)(wav)
 
