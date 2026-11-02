@@ -181,3 +181,4 @@ cython_debug/
 .cursorindexingignore
 /data
 xvectors_*.ipynb
+/pretrained_models
