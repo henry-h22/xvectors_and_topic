@@ -36,9 +36,11 @@ def ms_to_samples(ms: int, sr: int = 16000):
     return (ms * sr) / 1000
 
 
-def grab_snippet(audio: torch.tensor, start_ms: int, end_ms: int) -> torch.tensor:
+def grab_snippet(audio: torch.tensor, start_ms: int, end_ms: int) -> tuple[torch.tensor, int]:
     """
-    Given a torchaudio tensor @ sample rate 16,000 Hz, return just the bit between the two bounds
+    Given a torchaudio tensor @ sample rate 16,000 Hz, returns a tuple:
+    (just the bit of audio between the two bounds,
+    the start of the snippet in ms w.r.t. the entire audio file)
     """
 
     start_sample = ms_to_samples(start_ms)
@@ -48,7 +50,7 @@ def grab_snippet(audio: torch.tensor, start_ms: int, end_ms: int) -> torch.tenso
     max_sample = audio.size()[1] - 1
     if end_sample > max_sample: end_sample = max_sample
 
-    return audio[ms_to_samples(start_ms):]
+    return (audio[ms_to_samples(start_ms):], start_ms)
 
 
 def eaf_pair_to_snippet_times(eaf_code_1: tuple[int, int, str], eaf_code_2: tuple[int, int, str]) -> tuple[int, int]:
