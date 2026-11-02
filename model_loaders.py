@@ -19,13 +19,11 @@ def classifier() -> EncoderClassifier:
     return classifier
 
 
-def embed_file(classifier, input):
+def embed_file(classifier: EncoderClassifier, input: torch.Tensor):
     return classifier.encode_batch(input)[0][0]
 
 
-
-
-# These are general helpers:
+# these are audio helpers:
 
 def load_file(path: Path):
     wav, sr = torchaudio.load(path)
@@ -52,6 +50,8 @@ def grab_snippet(audio: torch.tensor, boundaries_ms: tuple[int, int]) -> tuple[t
 
     return (audio[0][start_sample:end_sample], boundaries_ms[0])
 
+
+# These are eaf-side helpers:
 
 def eaf_pair_to_snippet_times(eaf_code_1: tuple[int, int, str], eaf_code_2: tuple[int, int, str]) -> tuple[int, int]:
     return (int((eaf_code_1[0] + eaf_code_1[1]) / 2), int((eaf_code_2[0] + eaf_code_2[1]) / 2))
