@@ -50,7 +50,7 @@ def grab_snippet(audio: torch.tensor, boundaries_ms: tuple[int, int]) -> tuple[t
     max_sample = audio.size()[1] - 1
     if end_sample > max_sample: end_sample = max_sample
 
-    return (audio[start_sample:end_sample], boundaries_ms[0])
+    return (audio[0][start_sample:end_sample], boundaries_ms[0])
 
 
 def eaf_pair_to_snippet_times(eaf_code_1: tuple[int, int, str], eaf_code_2: tuple[int, int, str]) -> tuple[int, int]:
