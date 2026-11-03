@@ -25,6 +25,10 @@ def embed_file(classifier: EncoderClassifier, input: torch.Tensor):
     return classifier.encode_batch(input)[0][0]
 
 
+def embed_batch(classifier: EncoderClassifier, input_batch: torch.Tensor):
+    return classifier.encode_batch(input_batch)
+
+
 # these are audio helpers:
 
 def load_file(path: Path):
