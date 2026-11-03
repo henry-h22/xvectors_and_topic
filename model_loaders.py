@@ -55,9 +55,19 @@ def grab_snippet(audio: torch.tensor, boundaries_ms: tuple[int, int]) -> tuple[t
 
 def chunk_audio_batch(audio: torch.Tensor, window_size_seconds: float = 4.0, window_slide_seconds: float = 2.0, do_hamming: bool = True):
     window_size_samples = round(window_size_seconds * 16000)
-    window_slide_samles = round(window_slide_seconds * 16000)
+    window_slide_samples = round(window_slide_seconds * 16000)
 
+    chunks = audio.unfold(0, window_size_samples, window_slide_samples)
 
+    if do_hamming:
+        hamming = torch.hamming_window(
+            window_size_samples,
+            periodic = False,
+            device = DEVICE
+        )
+        chunks = chunks * hamming
+
+    return chunks
 
 
 # These are eaf-side helpers:
