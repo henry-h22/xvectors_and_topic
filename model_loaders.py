@@ -57,7 +57,7 @@ def grab_snippet(audio: torch.tensor, boundaries_ms: tuple[int, int]) -> tuple[t
     return (audio[0][start_sample:end_sample], boundaries_ms[0])
 
 
-def chunk_audio_batch(audio: torch.Tensor, window_size_seconds: float = 4.0, window_slide_seconds: float = 2.0, do_hamming: bool = True):
+def chunk_audio_batch(audio: torch.Tensor, window_size_seconds: float = 4.0, window_slide_seconds: float = 2.0, do_hamming: bool = False):
     window_size_samples = round(window_size_seconds * 16000)
     window_slide_samples = round(window_slide_seconds * 16000)
 
