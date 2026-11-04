@@ -12,7 +12,7 @@ WINDOW_SLIDE = 2.0
 
 # These are model-specific:
 
-def classifier() -> EncoderClassifier:
+def get_classifier() -> EncoderClassifier:
     device = "cuda" if torch.cuda.is_available() else "cpu"
     classifier = EncoderClassifier.from_hparams(
         source="speechbrain/spkrec-xvect-voxceleb",
