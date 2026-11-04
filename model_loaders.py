@@ -29,6 +29,18 @@ def embed_batch(classifier: EncoderClassifier, input_batch: torch.Tensor):
     return classifier.encode_batch(input_batch)
 
 
+def avg_cos_similarity(encoded_block_1: torch.Tensor, encoded_block_2: torch.Tensor) -> float:
+    """
+    Real talk Google Gemini wrote this function because I knew it could be done faster than my for loop nonsense
+    """
+    tensor_a_norm = torch.nn.functional.normalize(encoded_block_1, p=2, dim=1)
+    tensor_b_norm = torch.nn.functional.normalize(encoded_block_2, p=2, dim=1)
+
+    similarity_matrix = torch.matmul(tensor_a_norm, tensor_b_norm.T)
+
+    return similarity_matrix.mean().item()
+
+
 # these are audio helpers:
 
 def load_file(path: Path):
