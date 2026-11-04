@@ -23,16 +23,16 @@ def get_classifier() -> EncoderClassifier:
     return classifier
 
 
-def title_to_embeddings(title: str, classifier: EncoderClassifier) -> tuple[torch.Tensor, list[int]]:
+def title_to_embeddings(title: str, classifier: EncoderClassifier, wav_dir: str = 'data/wav', eaf_dir: str = 'data/eaf') -> tuple[torch.Tensor, list[int]]:
     """
     Given the title of a file (e.g. the wav file w/o .wav), return a tuple in the form:
     (all of the embeddings from the file, a list of the times in milliseconds where those are from)
     """
-    audio = load_file(Path(f'data/wav/{title}.wav'))
+    audio = load_file(Path(f'{wav_dir}/{title}.wav'))
     chunks = []
     times = []
 
-    for interval in get_snippets_from_eaf(Path(f'data/eaf/{title}.eaf')):
+    for interval in get_snippets_from_eaf(Path(f'{eaf_dir}/{title}.eaf')):
         snippet_audio, t = grab_snippet(audio, interval)
         new_chunk = chunk_audio_batch(snippet_audio)
         chunks.append(new_chunk)
