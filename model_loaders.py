@@ -23,6 +23,25 @@ def classifier() -> EncoderClassifier:
     return classifier
 
 
+def title_to_embeddings(title: str, classifier: EncoderClassifier) -> tuple[torch.Tensor, list[int]]:
+    """
+    Given the title of a file (e.g. the wav file w/o .wav), return a tuple in the form:
+    (all of the embeddings from the file, a list of the times in milliseconds where those are from)
+    """
+    audio = load_file(Path(f'data/wav/{title}.wav'))
+    chunks = []
+    times = []
+    
+    for interval in get_snippets_from_eaf(Path(f'data/eaf/{title}.eaf')):
+        snippet_audio, t = grab_snippet(audio, interval)
+        new_chunk = chunk_audio_batch(snippet_audio)
+        chunks.append(new_chunk)
+        for i in range(new_chunk.size()[0]):
+            times.append(int(t + (2000 * i) + (WINDOW_SIZE * (2000 / 2))))
+        
+    return (torch.cat(chunks, dim=0).squeeze(1), times)
+
+
 def embed_file(classifier: EncoderClassifier, input: torch.Tensor):
     return classifier.encode_batch(input)[0][0]
 
@@ -33,7 +52,7 @@ def embed_batch(classifier: EncoderClassifier, input_batch: torch.Tensor):
 
 def avg_cos_similarity(encoded_block_1: torch.Tensor, encoded_block_2: torch.Tensor) -> float:
     """
-    Real talk Google Gemini wrote this function because I knew it could be done faster than my for loop nonsense
+    Real talk Google Gemini wrote this function because I knew it could be done faster than my for-loop nonsense
     """
     tensor_a_norm = torch.nn.functional.normalize(encoded_block_1, p=2, dim=1)
     tensor_b_norm = torch.nn.functional.normalize(encoded_block_2, p=2, dim=1)
