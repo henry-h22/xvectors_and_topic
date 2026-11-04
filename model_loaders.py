@@ -7,6 +7,7 @@ from pympi.Elan import Eaf
 from speechbrain.inference.speaker import EncoderClassifier
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+WINDOW_SIZE = 4.0 # these are in seconds btw
 WINDOW_SLIDE = 2.0
 
 # These are model-specific:
@@ -70,7 +71,7 @@ def grab_snippet(audio: torch.tensor, boundaries_ms: tuple[int, int]) -> tuple[t
     return (audio[0][start_sample:end_sample], boundaries_ms[0])
 
 
-def chunk_audio_batch(audio: torch.Tensor, window_size_seconds: float = 4.0, window_slide_seconds: float = WINDOW_SLIDE, do_hamming: bool = False):
+def chunk_audio_batch(audio: torch.Tensor, window_size_seconds: float = WINDOW_SIZE, window_slide_seconds: float = WINDOW_SLIDE, do_hamming: bool = False):
     window_size_samples = round(window_size_seconds * 16000)
     window_slide_samples = round(window_slide_seconds * 16000)
 
