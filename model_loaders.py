@@ -3,6 +3,7 @@ from pathlib import Path
 import torch
 import torchaudio
 from pympi.Elan import Eaf
+from pandas import DataFrame
 
 from speechbrain.inference.speaker import EncoderClassifier
 
@@ -62,6 +63,18 @@ def avg_cos_similarity(encoded_block_1: torch.Tensor, encoded_block_2: torch.Ten
 
     return similarity_matrix.mean().item()
 
+
+def save_embedded_batch(batch: tuple[torch.tensor, list[int]], title: str, output_dir: str = 'output') -> None:
+    # first we'll make sure that the folders exist:
+    Path(f'{output_dir}/xvector').mkdir(parents = True, exist_ok = True)
+    Path(f'{output_dir}/time').mkdir(parents = True, exist_ok = True)
+
+    # store the xvectors (rows) as a csv!
+    DataFrame(batch[0].numpy()).to_csv(f'{output_dir}/xvector/{title}', index = False)
+
+    # hold on to the time info because probably it'll come up:
+    DataFrame(batch[1]).to_csv(f'{output_dir}/time/{title}', index = False)
+    
 
 # these are audio helpers:
 
