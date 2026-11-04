@@ -31,15 +31,16 @@ def title_to_embeddings(title: str, classifier: EncoderClassifier) -> tuple[torc
     audio = load_file(Path(f'data/wav/{title}.wav'))
     chunks = []
     times = []
-    
+
     for interval in get_snippets_from_eaf(Path(f'data/eaf/{title}.eaf')):
         snippet_audio, t = grab_snippet(audio, interval)
         new_chunk = chunk_audio_batch(snippet_audio)
         chunks.append(new_chunk)
         for i in range(new_chunk.size()[0]):
             times.append(int(t + (2000 * i) + (WINDOW_SIZE * (2000 / 2))))
-        
-    return (torch.cat(chunks, dim=0).squeeze(1), times)
+
+    big_old_chunk = torch.cat(chunks, dim=0).squeeze(1)
+    return (embed_batch(classifier, big_old_chunk), times)
 
 
 def embed_file(classifier: EncoderClassifier, input: torch.Tensor):
