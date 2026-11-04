@@ -26,7 +26,7 @@ def embed_file(classifier: EncoderClassifier, input: torch.Tensor):
 
 
 def embed_batch(classifier: EncoderClassifier, input_batch: torch.Tensor):
-    return classifier.encode_batch(input_batch)
+    return classifier.encode_batch(input_batch).squeeze(1)
 
 
 def avg_cos_similarity(encoded_block_1: torch.Tensor, encoded_block_2: torch.Tensor) -> float:
