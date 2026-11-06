@@ -71,7 +71,7 @@ def avg_cos_similarity(encoded_block_1: torch.Tensor, encoded_block_2: torch.Ten
 
 def save_embedded_batch(batch: tuple[torch.tensor, list[int]], title: str, output_dir: str = 'output') -> None:
     # before we do anything, we check if title_to_embeddings failed:
-    if batch == (torch.tensor(-1), [-1]):
+    if batch[1][0] == -1:
         print(f'file {title} had no target snippets :/')
         return
 
