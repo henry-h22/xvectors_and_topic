@@ -33,7 +33,12 @@ def title_to_embeddings(title: str, classifier: EncoderClassifier, wav_dir: str 
     chunks = []
     times = []
 
-    for interval in get_snippets_from_eaf(Path(f'{eaf_dir}/{title}.eaf')):
+    target_audio_snippets = get_snippets_from_eaf(Path(f'{eaf_dir}/{title}.eaf'))
+    if len(target_audio_snippets) <= 0:
+        # we just get out if an audio file doesn't have any snippets (usually when an interviewer is gabbing) 
+        return (torch.tensor(-1), [-1])
+
+    for interval in target_audio_snippets:
         snippet_audio, t = grab_snippet(audio, interval)
         new_chunk = chunk_audio_batch(snippet_audio)
         chunks.append(new_chunk)
@@ -65,7 +70,12 @@ def avg_cos_similarity(encoded_block_1: torch.Tensor, encoded_block_2: torch.Ten
 
 
 def save_embedded_batch(batch: tuple[torch.tensor, list[int]], title: str, output_dir: str = 'output') -> None:
-    # first we'll make sure that the folders exist:
+    # before we do anything, we check if title_to_embeddings failed:
+    if batch == (torch.tensor(-1), [-1]):
+        print(f'file {title} had no target snippets :/')
+        return
+
+    # then we'll make sure that the folders exist:
     Path(f'{output_dir}/xvector').mkdir(parents = True, exist_ok = True)
     Path(f'{output_dir}/time').mkdir(parents = True, exist_ok = True)
 
